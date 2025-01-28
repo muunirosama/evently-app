@@ -1,11 +1,20 @@
 import 'package:evently_app/core/routes/pages_routes_name.dart';
 import 'package:evently_app/core/themes/color_pallete.dart';
+import 'package:evently_app/core/utlis/firebase-functions.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_assets.dart';
 
-class SignInView extends StatelessWidget {
+class SignInView extends StatefulWidget {
   const SignInView({super.key});
+
+  @override
+  State<SignInView> createState() => _SignInViewState();
+}
+
+class _SignInViewState extends State<SignInView> {
+  bool isObscure = true;
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +54,18 @@ class SignInView extends StatelessWidget {
                     AssetImage(AppAssets.lockIcn),
                 ),
               ),
-              suffixIcon:const Icon(Icons.visibility_off),
+              suffixIcon:IconButton(
+                icon: Icon(
+                  isObscure?Icons.visibility_off:Icons.visibility
+                ),
+                onPressed:(){
+                  setState(() {
+                    isObscure = ! isObscure;
+                  });
+                },
+              ),
           ),
+            obscureText: isObscure,
         )
         ),
           Align(
@@ -68,7 +87,11 @@ class SignInView extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: ElevatedButton(onPressed: (){},
+            child: ElevatedButton(onPressed: (){
+              Navigator.pushNamed(context,
+                  PagesRouteName.layoutPage
+             );
+            },
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
                   backgroundColor: ColorPalette.primaryColor,
