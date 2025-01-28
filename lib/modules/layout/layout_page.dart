@@ -1,4 +1,5 @@
 import 'package:evently_app/core/themes/color_pallete.dart';
+import 'package:evently_app/modules/layout/home_tap.dart';
 import 'package:flutter/material.dart';
 
 class LayoutPage extends StatefulWidget {
@@ -10,6 +11,13 @@ class LayoutPage extends StatefulWidget {
 
 class _LayoutPageState extends State<LayoutPage> {
   int selectedIndex=0;
+  List<Widget> taps =[
+    homeTap(),
+    Scaffold(),
+    SizedBox.shrink(),
+    Scaffold(),
+    Scaffold()
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,6 +73,7 @@ class _LayoutPageState extends State<LayoutPage> {
           )
       ],
       ),
+      body: taps[selectedIndex],
     );
   }
   onbtnNavTapped(int index){
