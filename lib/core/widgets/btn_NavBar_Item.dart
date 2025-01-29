@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../../core/themes/color_pallete.dart';
 
-class tapbarItem extends StatelessWidget {
+class crete_event_tapbarItem extends StatelessWidget {
   final String text;
   final bool isSelected;
   final IconData icon;
-  const tapbarItem({super.key,
+  const crete_event_tapbarItem({super.key,
     required this.text,
     required this.isSelected,
     required this.icon
@@ -16,7 +16,7 @@ class tapbarItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration:BoxDecoration(
-          color: isSelected?ColorPalette.white:Colors.transparent,
+          color: isSelected?ColorPalette.white:ColorPalette.primaryColor,
           borderRadius: BorderRadius.circular(25),
         border: Border.all(
           color: ColorPalette.white
@@ -27,12 +27,12 @@ class tapbarItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon,
-          color: isSelected?ColorPalette.primaryColor:Colors.white,
+          color: isSelected?ColorPalette.primaryColor:ColorPalette.white,
           ),
           SizedBox(width: 8,),
           Text(text,
             style: TextStyle(
-                color: isSelected?ColorPalette.primaryColor:Colors.white,
+                color: isSelected?ColorPalette.primaryColor:ColorPalette.white,
             ),
           ),
         ],

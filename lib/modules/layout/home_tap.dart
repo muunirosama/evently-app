@@ -1,10 +1,11 @@
 import 'package:evently_app/core/constants/category_data.dart';
 import 'package:evently_app/core/themes/color_pallete.dart';
 import 'package:evently_app/core/widgets/custom_elevated_button.dart';
-import 'package:evently_app/modules/layout/widgets/btn_NavBar_Item.dart';
 import 'package:evently_app/modules/layout/widgets/category_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../core/widgets/btn_NavBar_Item.dart';
 
 class homeTap extends StatelessWidget {
   const homeTap({super.key});
@@ -86,35 +87,35 @@ class homeTap extends StatelessWidget {
                     isScrollable: true,
                       tabs:[
                         Tab(
-                          child:tapbarItem(
+                          child:crete_event_tapbarItem(
                             text:"all",
                             icon: Icons.compass_calibration,
                             isSelected: true,
                           ),
                         ),
                         Tab(
-                          child:tapbarItem(
+                          child:crete_event_tapbarItem(
+                            text:"sport",
+                            icon: Icons.directions_bike_rounded,
+                            isSelected: false,
+                          ),
+                        ),
+                        Tab(
+                          child:crete_event_tapbarItem(
+                            text:"birthday",
+                            icon: Icons.cake,
+                            isSelected: false,
+                          ),
+                        ),
+                        Tab(
+                          child:crete_event_tapbarItem(
                             text:"all",
                             icon: Icons.compass_calibration,
                             isSelected: false,
                           ),
                         ),
                         Tab(
-                          child:tapbarItem(
-                            text:"all",
-                            icon: Icons.compass_calibration,
-                            isSelected: false,
-                          ),
-                        ),
-                        Tab(
-                          child:tapbarItem(
-                            text:"all",
-                            icon: Icons.compass_calibration,
-                            isSelected: false,
-                          ),
-                        ),
-                        Tab(
-                          child:tapbarItem(
+                          child:crete_event_tapbarItem(
                             text:"all",
                             icon: Icons.compass_calibration,
                             isSelected: false,
@@ -127,12 +128,14 @@ class homeTap extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 1),
+        SizedBox(height: 16),
         Expanded(
           child: ListView.separated(
+            padding: EdgeInsets.symmetric(horizontal: 16),
             itemCount: 10,
             itemBuilder: (context, index) {
               return CategoryCard();
+
             },
             separatorBuilder: (context, index) {
               return SizedBox(height: 16,);

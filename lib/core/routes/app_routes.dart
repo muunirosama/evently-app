@@ -1,5 +1,6 @@
 
 import 'package:evently_app/core/routes/pages_routes_name.dart';
+import 'package:evently_app/modules/crete-event/create_event.dart';
 import 'package:evently_app/modules/forgetpassword/foget_password.dart';
 import 'package:evently_app/modules/layout/layout_page.dart';
 import 'package:evently_app/modules/onBoarding/on_boarding_view.dart';
@@ -39,6 +40,11 @@ abstract class AppRoutes{
       case PagesRouteName.layoutPage:
         return MaterialPageRoute(
             builder: (context)=> const LayoutPage(),
+            settings: settings
+        );
+      case PagesRouteName.createEvent:
+        return MaterialPageRoute(
+            builder: (context)=> const CreateEvent(),
             settings: settings
         );
         default:

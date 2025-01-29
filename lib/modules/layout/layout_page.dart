@@ -2,6 +2,8 @@ import 'package:evently_app/core/themes/color_pallete.dart';
 import 'package:evently_app/modules/layout/home_tap.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/routes/pages_routes_name.dart';
+
 class LayoutPage extends StatefulWidget {
   const LayoutPage({super.key});
 
@@ -31,7 +33,12 @@ class _LayoutPageState extends State<LayoutPage> {
           )
         ),
         backgroundColor: ColorPalette.primaryColor,
-        onPressed: () {},
+        onPressed: () {
+    Navigator.pushNamed(context,
+    PagesRouteName.createEvent
+    );
+    },
+
         child: const Icon(
           Icons.add,
         size: 30,

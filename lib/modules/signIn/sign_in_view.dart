@@ -1,6 +1,6 @@
 import 'package:evently_app/core/routes/pages_routes_name.dart';
 import 'package:evently_app/core/themes/color_pallete.dart';
-import 'package:evently_app/core/utlis/firebase-functions.dart';
+import 'package:evently_app/core/utlis/firebase-services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 

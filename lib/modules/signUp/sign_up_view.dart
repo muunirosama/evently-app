@@ -3,7 +3,7 @@ import 'package:evently_app/core/themes/color_pallete.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_assets.dart';
-import '../../core/utlis/firebase-functions.dart';
+import '../../core/utlis/firebase-services.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
@@ -111,7 +111,7 @@ class _SignUpViewState extends State<SignUpView> {
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
             child: ElevatedButton(
                 onPressed: () {
-                  FirebaseFunctions.createAccount(
+                  FirebaseServices.createAccount(
                       emailController.text, passwordController.text);
                 },
                 style: ElevatedButton.styleFrom(
