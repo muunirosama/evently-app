@@ -5,47 +5,45 @@ import 'package:flutter/material.dart';
 class EventDataModel{
   static const String collectionName = "EventDataCollection";
   String id;
-  final String eventTitle;
-  final String eventDescribtion;
-  final String eventCategory;
-  final String eventImage;
-  final DateTime eventDate;
-  final TimeOfDay eventTime;
-  final bool isFavourite;
+   String eventTitle;
+   String eventDescription;
+   String eventCategory;
+   String eventImage;
+  DateTime eventDate;
+
+   bool isFavourite;
 
   EventDataModel({
-      required this.id,
+      this.id = "",
       required this.eventTitle,
-      required this.eventDescribtion,
+      required this.eventDescription,
       required this.eventCategory,
       required this.eventImage,
       required this.eventDate,
-      required this.eventTime,
-      this.isFavourite= false
+      this.isFavourite= false,
   });
 
   // json to object
-  factory EventDataModel.fromFirestore(Map<String,dynamic>json)=> EventDataModel(
+  factory EventDataModel.fromFireStore(Map<String,dynamic>json)=> EventDataModel(
   id: json["id"],
   eventTitle: json["eventTitle"],
-  eventDescribtion: json["eventDescription"],
+    eventDescription: json["eventDescription"],
   eventCategory: json["eventCategory"],
   eventImage: json["eventImage"],
   eventDate: json["eventDate"],
-  eventTime: json["eventTime"],
-  isFavourite: json["isFavourite"]
+  isFavourite: json["isFavourite"],
+
   );
 
   //object to json
-  Map<String,dynamic> toFirestore(){
+  Map<String,dynamic> toFireStore(){
     return{
       "eventId": id,
       "eventTitle":eventTitle,
-      "eventDescribtion":eventDescribtion,
+      "eventDescription":eventDescription,
       "eventCategory": eventCategory,
       "eventImage": eventImage,
       "eventDate": eventDate,
-      "eventTime": eventTime,
       "isFavourite": isFavourite
     };
   }

@@ -1,9 +1,14 @@
-import 'package:evently_app/core/routes/pages_routes_name.dart';
+import 'package:evently_app/core/extensions/Padding.dart';
 import 'package:evently_app/core/themes/color_pallete.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../core/constants/app_assets.dart';
-import '../../core/utlis/firebase-services.dart';
+import '../../core/extensions/validtions.dart';
+import '../../core/routes/pages_routes_name.dart';
+import '../../core/services/FirebaseAuth.dart';
+
+import '../../core/widgets/custom_text_field.dart';
+import '../../main.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
@@ -13,12 +18,16 @@ class SignUpView extends StatefulWidget {
 }
 
 class _SignUpViewState extends State<SignUpView> {
+
+  final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+
+    var theme = Theme.of(context);
     var mediaQuery = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
@@ -30,131 +39,182 @@ class _SignUpViewState extends State<SignUpView> {
             )),
         centerTitle: true,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SizedBox(
-            height: 20,
-          ),
-          Image.asset(
-            AppAssets.Eventlylogo,
-            height: mediaQuery.size.height * 0.25,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-            child: TextField(
-              controller: nameController,
-              decoration: InputDecoration(
-                hintText: "Name",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                prefixIcon: Transform.scale(
-                  scale: .7,
-                  child: const ImageIcon(AssetImage(
+      body: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              height: 20,
+            ),
+            Image.asset(
+              AppAssets.Eventlylogo,
+              height: mediaQuery.size.height * 0.25,
+            ),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: CustomTextField(
+                controller: nameController,
+                hint: "Name",
+                hintColor: ColorPalette.generalGreyColor,
+                onValidate: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "plz enter your name";
+                  }
+                  return null;
+                },
+                prefixIcon: const ImageIcon(
+                  AssetImage(
                     AppAssets.nameIcn,
-                  )),
+                  ),
+                  color: ColorPalette.generalGreyColor,
                 ),
-              ),
+              ).setOnlyPadding(context, 0.03, 0.0, 0.0, 0.0),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-            child: TextField(
-              controller: emailController,
-              decoration: InputDecoration(
-                hintText: "Email",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: CustomTextField(
+                controller: emailController,
+                hint: "Email",
+                hintColor: ColorPalette.generalGreyColor,
+                onValidate: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "plz enter your email address";
+                  }
+                  if (!Validations.validateEmail(value)) {
+                    return "plz enter your a valid email address";
+                  }
+                  return null;
+                },
+                prefixIcon: const ImageIcon(
+                  AssetImage(
+                    AppAssets.mailIcn,
+                  ),
+                  color: ColorPalette.generalGreyColor,
                 ),
-                prefixIcon: const ImageIcon(AssetImage(AppAssets.mailIcn)),
-              ),
+              ).setOnlyPadding(context, 0.015, 0.0, 0.0, 0.0),
             ),
-          ),
-          Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-              child: TextField(
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: CustomTextField(
                 controller: passwordController,
-                decoration: InputDecoration(
-                  hintText: "Password",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
+                isPassword: true,
+                maxLines: 1,
+                hint: "Password",
+                hintColor: ColorPalette.generalGreyColor,
+                onValidate: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "plz enter your password";
+                  }
+                  if (!Validations.validatePassword(value)) {
+                    return "plz enter your a valid password";
+                  }
+                  return null;
+                },
+                prefixIcon: const ImageIcon(
+                  AssetImage(
+                    AppAssets.lockIcn,
                   ),
-                  prefixIcon: Transform.scale(
-                    scale: .6,
-                    child: const ImageIcon(
-                      AssetImage(AppAssets.lockIcn),
-                    ),
-                  ),
-                  suffixIcon: const Icon(Icons.visibility_off),
+                  color: ColorPalette.generalGreyColor,
                 ),
-              )),
-          Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: "Re Password",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
+              ).setOnlyPadding(context, 0.015, 0.0, 0.0, 0.0),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: CustomTextField(
+                isPassword: true,
+                maxLines: 1,
+                hint: "Re-Password",
+                hintColor: ColorPalette.generalGreyColor,
+                onValidate: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "plz enter your password";
+                  }
+                  if (value != passwordController.text) {
+                    return "re-password not match.";
+                  }
+                  return null;
+                },
+                prefixIcon: const ImageIcon(
+                  AssetImage(
+                    AppAssets.lockIcn,
                   ),
-                  prefixIcon: Transform.scale(
-                    scale: .6,
-                    child: const ImageIcon(
-                      AssetImage(AppAssets.lockIcn),
-                    ),
-                  ),
-                  suffixIcon: const Icon(Icons.visibility_off),
+                  color: ColorPalette.generalGreyColor,
                 ),
-              )),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-            child: ElevatedButton(
+              ).setOnlyPadding(context, 0.015, 0.0, 0.0, 0.0),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ElevatedButton(
                 onPressed: () {
-                  FirebaseServices.createAccount(
-                      emailController.text, passwordController.text);
+                  if (_formKey.currentState!.validate()) {
+                    FirebaseAuthFunction.createAccount(
+                      emailAddress: emailController.text,
+                      password: passwordController.text,
+                    ).then(
+                          (value) {
+                        EasyLoading.dismiss();
+                        if (value==true) {
+                          navigatorKey.currentState!.pushNamedAndRemoveUntil(
+                            PagesRouteName.signIn,
+                                (route) => false,
+                          );
+                        }
+                      },
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    backgroundColor: ColorPalette.primaryColor,
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16))),
-                child: const Text(
-                  "Create Account",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: ColorPalette.white,
-                      fontSize: 20),
-                )),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                "Already have account ?",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  elevation: 0,
+                  backgroundColor: ColorPalette.primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
                 ),
-              ),
-              TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    "Login",
-                    style: TextStyle(
-                      color: ColorPalette.primaryColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      decoration: TextDecoration.underline,
-                      decorationColor: ColorPalette.primaryColor,
-                    ),
-                  ))
-            ],
-          ),
-        ],
-      ),
-    );
+                child: Text(
+                  "Register",
+                  style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold, color: ColorPalette.white),
+                ).setVerticalPadding(context, 0.015),
+              ).setVerticalPadding(context, 0.025),
+            ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "Already have account ?",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                TextButton(
+                    onPressed: () {
+                      navigatorKey.currentState!.pop();
+                    },
+                    child: const Text(
+                      "Login",
+                      style: TextStyle(
+                        color: ColorPalette.primaryColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        decoration: TextDecoration.underline,
+                        decorationColor: ColorPalette.primaryColor,
+                      ),
+                    ))
+              ],
+            ),
+          ]
+        ),
+      )
+      );
   }
 }

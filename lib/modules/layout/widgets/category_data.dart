@@ -7,19 +7,19 @@ class CategoryData{
   static List<CategoryData> categories=[
     //CategoryData(id:"all", name:"all",image: ""),
     CategoryData(
-        id:"birthday",
-        name: "Birthday",
+        id:"Birthday",
+        name: "This is a Birthday Party ",
         image: "assets/images/bdimg.png"
     ),
     CategoryData(
-        id:"birthday",
-        name: "Birthday",
-        image: "assets/images/bdimg.png"
+        id:"Sports",
+        name: "We Are Going To Play Football",
+        image: "assets/images/Rectangle 977.png"
     ),
     CategoryData(
-        id:"birthday",
-        name: "Birthday",
-        image: "assets/images/bdimg.png"
+        id:"Meeting",
+        name: "Meeting for Updating The Development Method ",
+        image: "assets/images/Frame 17 (1).png"
     ),
     CategoryData(
         id:"birthday",

@@ -1,8 +1,12 @@
 import 'package:evently_app/core/themes/color_pallete.dart';
+import 'package:evently_app/modules/layout/favourites_tap.dart';
 import 'package:evently_app/modules/layout/home_tap.dart';
+import 'package:evently_app/modules/layout/map_tap.dart';
+import 'package:evently_app/modules/layout/profile_tap.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/routes/pages_routes_name.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LayoutPage extends StatefulWidget {
   const LayoutPage({super.key});
@@ -12,16 +16,18 @@ class LayoutPage extends StatefulWidget {
 }
 
 class _LayoutPageState extends State<LayoutPage> {
+
   int selectedIndex=0;
   List<Widget> taps =[
-    homeTap(),
-    Scaffold(),
+    const HomeTap(),
+    MapView(),
     SizedBox.shrink(),
-    Scaffold(),
-    Scaffold()
+    FavoritesView(),
+    ProfileTap(),
   ];
   @override
   Widget build(BuildContext context) {
+    var locale= AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.white,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -52,31 +58,31 @@ class _LayoutPageState extends State<LayoutPage> {
         selectedItemColor: ColorPalette.white,
         unselectedItemColor: ColorPalette.white,
         currentIndex: selectedIndex,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-              icon: Icon (Icons.home_outlined),
-            activeIcon: Icon (Icons.home),
-            label: "Home"
+              icon: const Icon (Icons.home_outlined),
+            activeIcon: const Icon (Icons.home),
+            label: locale.home
           ),
-          BottomNavigationBarItem(
+           BottomNavigationBarItem(
               icon: Icon (Icons.location_on_outlined),
               activeIcon: Icon (Icons.location_on),
-              label: "Map"
+              label: locale.map
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
               icon: Icon (Icons.location_on_outlined),
               activeIcon: SizedBox.shrink(),
               label: ""
           ),
-          BottomNavigationBarItem(
+           BottomNavigationBarItem(
               icon: Icon (Icons.favorite_border_outlined),
               activeIcon: Icon (Icons.favorite),
-              label: "Favourites"
+              label: locale.favourites
           ),
-          BottomNavigationBarItem(
+           BottomNavigationBarItem(
               icon: Icon (Icons.person_outline_rounded),
               activeIcon: Icon (Icons.person),
-              label: "Profile"
+              label: locale.profile
           )
       ],
       ),

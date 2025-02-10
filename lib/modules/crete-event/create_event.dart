@@ -1,17 +1,64 @@
+import 'package:evently_app/core/extensions/Padding.dart';
+import 'package:evently_app/core/services/FirebaseFirestoreService.dart';
 import 'package:evently_app/core/themes/color_pallete.dart';
 import 'package:evently_app/models/event_model.dart';
+import 'package:evently_app/modules/crete-event/widgets/TabWidget.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:intl/intl.dart';
 
 import '../../core/constants/app_assets.dart';
 import '../../core/routes/pages_routes_name.dart';
+import '../../core/services/FirebaseAuth.dart';
+import '../../core/services/SnackBarService.dart';
 import '../../core/widgets/btn_NavBar_Item.dart';
-class CreateEvent extends StatelessWidget {
-  const CreateEvent({super.key});
+import '../../core/widgets/custom_text_field.dart';
+import '../../main.dart';
+import '../../models/EventCategory.dart';
+class CreateNewEvent extends StatefulWidget {
+  const CreateNewEvent({super.key});
 
   @override
+  State<CreateNewEvent> createState() => _CreateNewEventState();
+}
+
+class _CreateNewEventState extends State<CreateNewEvent> {
+
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final _titleController = TextEditingController();
+  final _descriptionController = TextEditingController();
+
+  int selectedTap = 0;
+  DateTime? selectedDate;
+  TimeOfDay? selectedTime;
+  List<EventCategory> eventCategories = [
+    EventCategory(
+      eventCategoryName: "Book Club",
+      eventCategoryIcon: Icons.menu_book_outlined,
+      eventCategoryImg: "assets/images/Frame 69 (1).png",
+    ),
+    EventCategory(
+        eventCategoryName: "Sport",
+        eventCategoryIcon: Icons.directions_bike,
+        eventCategoryImg: "assets/images/Rectangle 977.png"),
+    EventCategory(
+        eventCategoryName: "BirthDay",
+        eventCategoryIcon: Icons.cake_outlined,
+        eventCategoryImg: "assets/images/bdimg.png"),
+    EventCategory(
+        eventCategoryName: "Meeting",
+        eventCategoryIcon: Icons.meeting_room_outlined,
+        eventCategoryImg: "assets/images/meeting.png"),
+    EventCategory(
+        eventCategoryName: "Holiday",
+        eventCategoryIcon: Icons.holiday_village_outlined,
+        eventCategoryImg: "assets/images/Frame 16 (2).png"),
+  ];
+
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
     var mediaQuery= MediaQuery.of(context);
     return  SafeArea(
       child: Scaffold(
@@ -22,65 +69,52 @@ class CreateEvent extends StatelessWidget {
             )
               ),
           ),
-        body: SizedBox(
-          width:mediaQuery.size.width*1,
-          child: DefaultTabController(
-            length: 5,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  ClipRRect(
-                     borderRadius:BorderRadius.circular(16),
-                    child: Image.asset("assets/images/creteevent.png",
-                    height: mediaQuery.size.height*0.20,
-                      width: mediaQuery.size.width*0.9,
+        body: SingleChildScrollView(
+         physics: ClampingScrollPhysics(),
+          child: Form(
+          key: formKey,
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 1.0,
+                  height: 0.26,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16.0),
+                    child: Image.asset(
+                      eventCategories[selectedTap].eventCategoryImg,
                       fit: BoxFit.cover,
                     ),
                   ),
+                ),
+                const SizedBox(height: 10),
+                DefaultTabController(
+                  length: 5,
+                  child: TabBar(
+                      isScrollable: true,
+                      tabAlignment: TabAlignment.start,
+                      indicatorPadding: EdgeInsets.zero,
+                      labelPadding: const EdgeInsets.symmetric(horizontal: 6.0),
+                      padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                      indicator: const BoxDecoration(),
+                      onTap: (value) {
+                        setState(() {
+                          selectedTap = value;
+                        });
+                      },
+                      tabs: eventCategories.map(
+                            (element) {
+                          return TabWidget(
+                            eventCategory: element,
+                            isSelected:
+                            selectedTap == eventCategories.indexOf(element),
+                          );
+                        },
+                      ).toList()),
+                ),
                   SizedBox(height: 16,),
-                  const SizedBox(
-                    child: TabBar(
-                        tabAlignment: TabAlignment.start,
-                        indicatorColor: Colors.transparent,
-                        dividerColor: Colors.transparent,
-                        isScrollable: true,
-                        tabs:[
-                          crete_event_tapbarItem(
-                              text:"Book club"
-                              , isSelected: false
-                              , icon: Icons.menu_book_outlined,
-                          ),
-                          crete_event_tapbarItem(
-                            text:"Sport"
-                            , isSelected: false
-                            , icon: Icons.directions_bike_rounded,
-                          ),
-                          crete_event_tapbarItem(
-                            text:"Birthday"
-                            , isSelected: false
-                            , icon: Icons.cake,
-                          ),
-                          crete_event_tapbarItem(
-                            text:"Book club"
-                            , isSelected: true
-                            , icon: Icons.compass_calibration,
-                          ),
-                          crete_event_tapbarItem(
-                            text:"Book club"
-                            , isSelected: true
-                            , icon: Icons.compass_calibration,
-                          ),
-                          crete_event_tapbarItem(
-                            text:"Book club"
-                            , isSelected: true
-                            , icon: Icons.compass_calibration,
-                          ),
-                        ]
-                    ),
-                  ),
-                  SizedBox(height: 16,),
+
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -91,145 +125,201 @@ class CreateEvent extends StatelessWidget {
                       ),
                       ),
                       SizedBox(height: 6,),
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: "Event title",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          prefixIcon:const ImageIcon(AssetImage("assets/images/Note_Edit.png")
-                          ),
+
+                      CustomTextField(
+                        controller: _titleController,
+                        hint: "Event Title",
+                        hintColor: ColorPalette.generalGreyColor,
+                        prefixIcon: const Icon(
+                          Icons.edit_note_outlined,
+                          color: ColorPalette.generalGreyColor,
                         ),
                       ),
                       SizedBox(height: 16,),
+
                       Text("Describtion",style: TextStyle(
                           color: Colors.black,
                           fontSize: 14,
                           fontWeight: FontWeight.bold
                       ),
                       ),
+
                       SizedBox(height: 6,),
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: "Event describtion",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          prefixIcon:const ImageIcon(AssetImage("assets/images/Note_Edit.png")
-                          ),
-                        ),
+
+                      CustomTextField(
+                        controller: _descriptionController,
+                        hint: "Event Description",
+                        hintColor: ColorPalette.generalGreyColor,
+                        maxLines: 4,
                       ),
-                      SizedBox(height: 16,),
-                      Row(
-                        children: [
-                          Icon(Icons.calendar_month_rounded),
-                          SizedBox(width: 12,),
-                          Text("Event date"),
-                          Spacer(),
-                          GestureDetector(
-                              onTap: (){},
-                              child:
-                          Text("choose date",
-                            style: TextStyle(
-                                color: ColorPalette.primaryColor,fontWeight: FontWeight.bold),))
-                        ],
-                      ),
-                      SizedBox(height: 16,),
-                      Row(
-                        children: [
-                          Icon(Icons.punch_clock_sharp),
-                          SizedBox(width: 12,),
-                          Text("Event time"),
-                          Spacer(),
-                          GestureDetector(
-                              onTap: (){},
-                              child:
-                          Text("choose time",style:
-                          TextStyle(color: ColorPalette.primaryColor, fontWeight: FontWeight.bold),))
-                        ],
-                      ),
-                      SizedBox(height: 16,),
-                      Text("Location",style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold
-                      ),
-                      ),
-                      SizedBox(height: 6,),
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          border:Border.all(
-                            color: ColorPalette.primaryColor
-                          )
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: ColorPalette.primaryColor,
-                                borderRadius: BorderRadius.circular(16)
-                              ),
-                              padding: EdgeInsets.all(16),
-                              child: Icon(
-                                Icons.location_on,
-                                color: ColorPalette.white,
-                              ),
-                            ),
-                            SizedBox(width: 12,),
-                            Text("Choose event location",
-                            style: TextStyle(
-                              color: ColorPalette.primaryColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold
-                            ),
-                            ),
-                            Spacer(),
-                            Icon(Icons.arrow_forward,
-                            color: ColorPalette.primaryColor,)
-                          ],
-                        ),
-                      ),
+
                       SizedBox(height: 16,),
 
-                      Center(
-                         child: ElevatedButton(
-                            onPressed: () {
-                            //  var data= EventDataModel(
-                              //     id: id,
-                              //     eventTitle: title,
-                              //     eventDescription: eventDescription,
-                              //     eventCategory: eventCategory,
-                              //     eventImage: eventImage,
-                              //     eventDate: eventDate,
-                              //     eventTime: eventTime
-                              // )
-                            },
-                          style: ElevatedButton.styleFrom(
-                        backgroundColor: ColorPalette.primaryColor,
-                                             shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(20),
+                      Row(
+                        children: [
+                          const Icon(Icons.calendar_month),
+                          const SizedBox(width: 10),
+                          Text(
+                            "Event Date",
+                            style: theme.textTheme.titleMedium,
                           ),
-                                          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                           ),
-                               child: Text(
-                                     "Add Event",
-                                    style: TextStyle(
-                                color: Colors.white,
-                                  fontSize: 16,
-                                  ),
-                                 ),
+                          const Spacer(),
+                          GestureDetector(
+                            onTap: () {
+                              selectEventDate(context);
+                            },
+                            child: Text(
+                              selectedDate != null
+                                  ? DateFormat("dd MMM yyy").format(selectedDate!)
+                                  : "Choose Date",
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                  color: ColorPalette.primaryColor,
+                                  fontWeight: FontWeight.bold),
                             ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                 ]
-                  ),
-            )
-                )
-            ),
-          ),
-        );
+
+                      SizedBox(height: 16,),
+
+    Text(
+    "Location",
+    style: theme.textTheme.titleMedium?.copyWith(),
+    ),
+    const SizedBox(height: 8),
+    ElevatedButton(
+    onPressed: () {},
+    style: ElevatedButton.styleFrom(
+    padding:
+    const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+    elevation: 0,
+    backgroundColor: Colors.transparent,
+    shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(16.0),
+    ),
+    side: const BorderSide(color: ColorPalette.primaryColor)),
+    child: Row(
+    children: [
+    Container(
+    padding: const EdgeInsets.all(10),
+    decoration: BoxDecoration(
+    color: ColorPalette.primaryColor,
+    borderRadius: BorderRadius.circular(8.0)),
+    child: const Icon(
+    Icons.my_location_outlined,
+    color: ColorPalette.white,
+    ),
+    ),
+    const SizedBox(width: 10),
+    Text(
+    "Choose Event Location",
+    style: theme.textTheme.titleMedium?.copyWith(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    color: ColorPalette.primaryColor),
+    ),
+    const Spacer(),
+    const Icon(
+    Icons.arrow_forward_ios_rounded,
+    color: ColorPalette.primaryColor,
+    ),
+    ],
+    ),
+    ),
+    const SizedBox(height: 20),
+    ElevatedButton(
+    onPressed: () {
+    if (formKey.currentState!.validate()) {
+    if (selectedDate != null) {
+    EventDataModel data = EventDataModel(
+    eventTitle: _titleController.text,
+    eventDescription: _descriptionController.text,
+    eventImage:
+    eventCategories[selectedTap].eventCategoryImg,
+    eventDate: selectedDate!,
+    eventCategory:
+    eventCategories[selectedTap].eventCategoryName,
+    );
+
+    EasyLoading.show();
+    FirebaseFirestoreService.createNewEvent(data).then(
+    (value) {
+    EasyLoading.dismiss();
+    if (value == true) {
+    navigatorKey.currentState!.pop();
+    SnackBarService.showSuccessMessage(
+    "Event was successfully created");
+    }
+    },
+    );
+    } else {
+    SnackBarService.showErrorMessage(
+    "you must select event date");
+    }
+    }
+    },
+    style: ElevatedButton.styleFrom(
+    padding: const EdgeInsets.symmetric(
+    horizontal: 8, vertical: 12),
+    elevation: 0,
+    backgroundColor: ColorPalette.primaryColor,
+    shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(16.0),
+    ),
+    side: const BorderSide(color: ColorPalette.primaryColor)),
+    child: Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+    Text(
+    "Add Event",
+    style: theme.textTheme.titleMedium?.copyWith(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    color: ColorPalette.white,
+    ),
+    ),
+    ],
+    )),
+    const SizedBox(height: 20),
+    ],
+    ).setHorizontalPadding(context, 0.04),
+    ]
+    ),
+    ),
+    )
+      )
+    );
+
+
+  }
+  void selectEventDate(BuildContext context) async {
+    DateTime? newDate = await showDatePicker(
+      context: context,
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(
+        const Duration(days: 365),
+      ),
+    );
+
+    if (newDate != null) {
+      setState(() {
+        selectedDate = newDate;
+      });
+      print(selectedDate);
+    }
+  }
+
+  void selectEventTime(BuildContext context) async {
+    TimeOfDay? newTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (newTime != null) {
+      setState(() {
+        selectedTime = newTime;
+      });
+      print(selectedTime);
+    }
   }
 }

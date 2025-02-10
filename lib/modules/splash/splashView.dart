@@ -1,9 +1,11 @@
 import 'dart:async';
-
-import 'package:evently_app/core/routes/pages_routes_name.dart';
+import 'package:evently_app/modules/onBoarding/pages/on_boarding_view.dart';
 import 'package:flutter/material.dart';
-
 import '../../core/constants/app_assets.dart';
+import '../../core/routes/pages_routes_name.dart';
+import '../../core/services/LocalStorageKeys.dart';
+import '../../core/services/localstorage.dart';
+import '../layout/layout_page.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -15,13 +17,25 @@ class SplashView extends StatefulWidget {
 class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
+    // Future.delayed(
+    //   const Duration(seconds: 2) ,() {
+    //   var  isFirstTime = LocalStorageServices.getBool(LocalStoragekey.isFirstTimeRun)??
+    //       true;
+    //   Navigator.pushReplacement(
+    //       context,
+    //       MaterialPageRoute(
+    //           builder: (context) => isFirstTime?  const OnBoardingView(): const LayoutPage()
+    //       )
+    //   );
+    // },
+    // );
     Timer(
-      Duration(seconds: 2),
-        () {
+        Duration(seconds: 2),
+            () {
           Navigator.pushNamedAndRemoveUntil(
-            context,
-            PagesRouteName.signIn,
-              (route)=>false
+              context,
+              PagesRouteName.signIn,
+                  (route)=>false
           );
         }
     );

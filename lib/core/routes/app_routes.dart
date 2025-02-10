@@ -3,7 +3,7 @@ import 'package:evently_app/core/routes/pages_routes_name.dart';
 import 'package:evently_app/modules/crete-event/create_event.dart';
 import 'package:evently_app/modules/forgetpassword/foget_password.dart';
 import 'package:evently_app/modules/layout/layout_page.dart';
-import 'package:evently_app/modules/onBoarding/on_boarding_view.dart';
+import 'package:evently_app/modules/onBoarding/pages/on_boarding_view.dart';
 import 'package:evently_app/modules/signIn/sign_in_view.dart';
 import 'package:evently_app/modules/signUp/sign_up_view.dart';
 import 'package:evently_app/modules/splash/splashView.dart';
@@ -17,11 +17,11 @@ abstract class AppRoutes{
             builder: (context)=> const SplashView(),
           settings: settings
         );
-      case PagesRouteName.onBoarding:
-        return MaterialPageRoute(
-            builder: (context)=> const OnBoardingView(),
-            settings: settings
-        );
+      // case PagesRouteName.onBoarding:
+      //   return MaterialPageRoute(
+      //       builder: (context)=> const OnBoardingView(),
+      //       settings: settings
+      //   );
       case PagesRouteName.signIn:
         return MaterialPageRoute(
             builder: (context)=> const SignInView(),
@@ -44,7 +44,7 @@ abstract class AppRoutes{
         );
       case PagesRouteName.createEvent:
         return MaterialPageRoute(
-            builder: (context)=> const CreateEvent(),
+            builder: (context)=> const CreateNewEvent(),
             settings: settings
         );
         default:
