@@ -29,7 +29,7 @@ class _LayoutPageState extends State<LayoutPage> {
   Widget build(BuildContext context) {
     var locale= AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(

@@ -3,17 +3,10 @@ import 'package:evently_app/core/services/FirebaseFirestoreService.dart';
 import 'package:evently_app/core/themes/color_pallete.dart';
 import 'package:evently_app/models/event_model.dart';
 import 'package:evently_app/modules/crete-event/widgets/TabWidget.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
-
-import '../../core/constants/app_assets.dart';
-import '../../core/routes/pages_routes_name.dart';
-import '../../core/services/FirebaseAuth.dart';
 import '../../core/services/SnackBarService.dart';
-import '../../core/widgets/btn_NavBar_Item.dart';
 import '../../core/widgets/custom_text_field.dart';
 import '../../main.dart';
 import '../../models/EventCategory.dart';

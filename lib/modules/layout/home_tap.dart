@@ -110,22 +110,19 @@ class _HomeTapState extends State<HomeTap> {
                             ),
                             SizedBox(width: 10,),
 
-                            GestureDetector(
-                              onTap: (){
+                            CustomElevatedButton(
+                              text: "EN",
+                              borderRadius: 8,
+                              textColor: ColorPalette.primaryColor,
+                              bgColor: Colors.white,
+                              onTap:(){
                                 if(provider.currentLanguage== "en"){
                                   provider.setCurrentLanguage("ar");
                                 }
-                                if(provider.currentLanguage=="ar") {
+                               else if(provider.currentLanguage=="ar") {
                                   provider.setCurrentLanguage("en");
                                 };
                               },
-                              child: CustomElevatedButton(
-                                text: "EN",
-                                borderRadius: 8,
-                                textColor: ColorPalette.primaryColor,
-                                bgColor: Colors.white,
-                                onTap:(){},
-                              ),
                             ),
                           ],
                         ),
@@ -180,19 +177,6 @@ class _HomeTapState extends State<HomeTap> {
 
           SizedBox(height: 16),
 
-          // Expanded(
-          //   child: ListView.separated(
-          //     padding: EdgeInsets.symmetric(horizontal: 16),
-          //     itemCount: 10,
-          //     itemBuilder: (context, index) {
-          //       return ;
-          //
-          //     },
-          //     separatorBuilder: (context, index) {
-          //       return SizedBox(height: 16,);
-          //     },
-          //   ),
-          // ),
           StreamBuilder<QuerySnapshot<EventDataModel>>(
             stream: FirebaseFirestoreService.getStreamData(
               eventCategories[selectedTapIndex].eventCategoryName,

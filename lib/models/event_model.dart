@@ -1,7 +1,3 @@
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
-
 class EventDataModel{
   static const String collectionName = "EventDataCollection";
   String id;
@@ -30,7 +26,7 @@ class EventDataModel{
     eventDescription: json["eventDescription"],
   eventCategory: json["eventCategory"],
   eventImage: json["eventImage"],
-  eventDate: json["eventDate"],
+  eventDate: DateTime.fromMillisecondsSinceEpoch (json["eventDate"]),
   isFavourite: json["isFavourite"],
 
   );
